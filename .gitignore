@@ -1,0 +1,88 @@
+# Node.js & Frontend
+**/node_modules/
+**/.pnp
+**/.pnp.js
+**/coverage/
+**/build/
+**/dist/
+**/.next/
+**/.nuxt/
+**/.output/
+**/.cache/
+**/.turbo/
+**/.vite/
+**/.eslintcache
+
+# Python & Backend
+**/__pycache__/
+**/*.py[cod]
+**/*.so
+**/.pytest_cache/
+**/.mypy_cache/
+**/.venv/
+**/venv/
+**/.envrc
+
+# FastAPI/Uvicorn
+**/instance/
+**/.env
+**/.env.*
+
+# Agents (Python)
+agents/agents/__pycache__/
+agents/adk/__pycache__/
+agents/utils/__pycache__/
+agents/tests/__pycache__/
+
+# Terraform & Infrastructure
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+crash.log
+crash.*.log
+.terraform.lock.hcl
+
+# CICD & Workflow Artifacts
+**/.github/workflows/*.log
+**/cicd/*.log
+
+# Logs & Debug
+**/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor & System Files
+**/.idea/
+**/.vscode/*
+!**/.vscode/extensions.json
+**/.DS_Store
+**/*.suo
+**/*.ntvs*
+**/*.njsproj
+**/*.sln
+**/*.sw?
+Thumbs.db
+
+# Local development & Secrets
+*.local
+.env.local
+.env.*.local
+.env
+.envrc
+*.pem
+*.key
+*.crt
+
+# Misc
+*.bak
+*.tmp
+*.orig
+*.rej

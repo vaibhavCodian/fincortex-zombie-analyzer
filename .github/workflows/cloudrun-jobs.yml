@@ -1,0 +1,54 @@
+name: Cloud Run Job CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cloudrun-jobs/**'
+      - '.github/workflows/cloudrun-jobs.yml'
+  pull_request:
+    paths:
+      - 'cloudrun-jobs/**'
+      - '.github/workflows/cloudrun-jobs.yml'
+
+env:
+  PROJECT_ID: ${{ vars.PROJECT_ID }}
+  REGION: ${{ vars.REGION }}
+  JOB_NAME: ${{ vars.CLOUDRUN_JOB }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cloudrun-jobs
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Authenticate to Google Cloud using Workload Identity Federation
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Build Docker image
+        run: |
+          gcloud builds submit --tag gcr.io/$PROJECT_ID/$JOB_NAME
+
+      - name: Deploy Cloud Run Job
+        run: |
+          gcloud run jobs deploy $JOB_NAME \
+            --image gcr.io/$PROJECT_ID/$JOB_NAME \
+            --region $REGION \
+            --command "<your-command>" \
+            --max-retries 3 \
+            --memory 512Mi \
+            --cpu 1 \
+            --project $PROJECT_ID
