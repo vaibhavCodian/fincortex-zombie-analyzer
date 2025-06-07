@@ -24,37 +24,42 @@ FinCortex-Mono/
 ### Application Flow
 
 ```mermaid
-flowchart TD
-  U1([User / Admin / Operator])
-  F1([Frontend Dashboard UI])
-  F2([Filters, Charts, Actions])
-  B1([API Gateway])
-  B2([Zombie Detection Agents])
-  B3([Resource Manager])
-  G1([GCP Resources: VMs, GKE, SQL, Storage])
-  G2([Cloud Monitoring])
-  I1([Provision GCP Infra])
-  I2([Deploy Services])
-  I3([Configure IAM & WIF])
-  C1([Build & Test])
-  C2([Deploy Frontend])
-  C3([Deploy Services])
-  C4([Deploy Infra])
+flowchart LR
+  %% Node styles
+  classDef user fill:#E3F2FD,stroke:#1976D2,stroke-width:2px,color:#1976D2;
+  classDef frontend fill:#E8F5E9,stroke:#388E3C,stroke-width:2px,color:#388E3C;
+  classDef backend fill:#FFFDE7,stroke:#FBC02D,stroke-width:2px,color:#FBC02D;
+  classDef agent fill:#F3E5F5,stroke:#8E24AA,stroke-width:2px,color:#8E24AA;
+  classDef gcp fill:#FBE9E7,stroke:#D84315,stroke-width:2px,color:#D84315;
+  classDef infra fill:#ECEFF1,stroke:#455A64,stroke-width:2px,color:#455A64;
+  classDef cicd fill:#E1F5FE,stroke:#0288D1,stroke-width:2px,color:#0288D1;
 
-  U1 -->|Uses| F1
-  F1 -->|API Calls| B1
-  F2 --> F1
-  B1 -->|Triggers| B2
-  B2 -->|Scans| G1
-  B2 -->|Reads Metrics| G2
-  B2 -->|Finds Zombies| B3
-  B3 -->|Returns Data| B1
-  B1 -->|Responds| F1
+  U1["User / Admin / Operator"]:::user --> F1["Frontend Dashboard UI"]:::frontend
+  F1 --> F2["Filters, Charts, Actions"]:::frontend
+  F1 -->|"API Calls"| B1["API Gateway"]:::backend
+  B1 -->|"Triggers"| B2["Zombie Detection Agents"]:::agent
+  B2 -->|"Scans"| G1["GCP Resources (VMs, GKE, SQL, Storage)"]:::gcp
+  B2 -->|"Reads Metrics"| G2["Cloud Monitoring"]:::gcp
+  B2 -->|"Finds Zombies"| B3["Resource Manager"]:::agent
+  B3 -->|"Returns Data"| B1
+  B1 -->|"Responds"| F1
 
-  I1 -->|Creates| G1
-  I2 -->|Deploys| B1
-  I3 -->|Sets up| G1
+  %% Infrastructure and CI/CD
+  subgraph Infra [Infrastructure]
+    I1["Provision GCP Infra"]:::infra
+    I2["Deploy Services"]:::infra
+    I3["Configure IAM & WIF"]:::infra
+  end
+  I1 --> G1
+  I2 --> B1
+  I3 --> G1
 
+  subgraph CICD [CI/CD]
+    C1["Build & Test"]:::cicd
+    C2["Deploy Frontend"]:::cicd
+    C3["Deploy Services"]:::cicd
+    C4["Deploy Infra"]:::cicd
+  end
   C1 --> C2
   C1 --> C3
   C1 --> C4
@@ -68,26 +73,20 @@ flowchart TD
 ### CI/CD Pipeline Flow
 
 ```mermaid
-flowchart TD
-  GH[GitHub Repo]
-  WF1[frontend.yml]
-  WF2[services.yml]
-  WF3[infrastructure.yml]
-  WF4[cloudrun-jobs.yml]
-  FE[Frontend Cloud Host]
-  BE[Backend/API Cloud Run]
-  INFRA[GCP Infra]
-  JOBS[Cloud Run Jobs]
+flowchart LR
+  classDef repo fill:#E3F2FD,stroke:#1976D2,stroke-width:2px,color:#1976D2;
+  classDef workflow fill:#FFFDE7,stroke:#FBC02D,stroke-width:2px,color:#FBC02D;
+  classDef deploy fill:#E8F5E9,stroke:#388E3C,stroke-width:2px,color:#388E3C;
 
-  GH --> WF1
-  GH --> WF2
-  GH --> WF3
-  GH --> WF4
+  GH["GitHub Repo"]:::repo --> WF1["frontend.yml"]:::workflow
+  GH --> WF2["services.yml"]:::workflow
+  GH --> WF3["infrastructure.yml"]:::workflow
+  GH --> WF4["cloudrun-jobs.yml"]:::workflow
 
-  WF1 --> FE
-  WF2 --> BE
-  WF3 --> INFRA
-  WF4 --> JOBS
+  WF1 --> FE["Frontend Cloud Host"]:::deploy
+  WF2 --> BE["Backend/API Cloud Run"]:::deploy
+  WF3 --> INFRA["GCP Infra"]:::deploy
+  WF4 --> JOBS["Cloud Run Jobs"]:::deploy
 ```
 
 ---
