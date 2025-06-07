@@ -69,15 +69,15 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  GH([GitHub Repo])
-  WF1([frontend.yml])
-  WF2([services.yml])
-  WF3([infrastructure.yml])
-  WF4([cloudrun-jobs.yml])
-  FE([Frontend (Cloud Host)])
-  BE([Backend/API (Cloud Run)])
-  INFRA([GCP Infra])
-  JOBS([Cloud Run Jobs])
+  GH[GitHub Repo]
+  WF1[frontend.yml]
+  WF2[services.yml]
+  WF3[infrastructure.yml]
+  WF4[cloudrun-jobs.yml]
+  FE[Frontend Cloud Host]
+  BE[Backend/API Cloud Run]
+  INFRA[GCP Infra]
+  JOBS[Cloud Run Jobs]
 
   GH --> WF1
   GH --> WF2
