@@ -5,6 +5,11 @@ FROM python:3.11-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# The above environment variables are commonly used in Python Docker containers:
+# PYTHONDONTWRITEBYTECODE=1 prevents Python from writing .pyc files to disk, which can save space and speed up container builds.
+# PYTHONUNBUFFERED=1 ensures that Python output is sent straight to the terminal without being buffered, which is useful for logging.
+
+
 # Set work directory
 WORKDIR /app
 
