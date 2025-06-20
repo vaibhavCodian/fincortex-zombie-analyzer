@@ -103,22 +103,6 @@ const baseResources: ZombieResource[] = [
   },
   {
     id: '7',
-    name: 'backup-storage-01',
-    type: 'Storage',
-    region: 'us-west2',
-    status: 'Available',
-    labels: ['backup', 'archive'],
-    tags: ['storage', 'backup'],
-    cpuUsage: 0.0,
-    lastActive: '2022-11-15T20:30:00Z',
-    agent: 'ZombieDetectorAgent',
-    recommendation: 'Storage bucket not accessed in 120+ days. Verify if still needed.',
-    project: 'backup-systems',
-    zone: 'us-west2-a',
-    cost: 12.40
-  },
-  {
-    id: '8',
     name: 'load-balancer-dev',
     type: 'LoadBalancer',
     region: 'europe-north1',
@@ -135,7 +119,7 @@ const baseResources: ZombieResource[] = [
   }
 ];
 
-const types = ['VM', 'GKE', 'SQL', 'Storage', 'LoadBalancer'];
+const types: ZombieResource['type'][] = ['VM', 'GKE', 'SQL', 'LoadBalancer']; // Removed 'Storage' and enforce type
 const regions = ['us-central1', 'us-east1', 'europe-west1', 'asia-southeast1', 'us-west2', 'europe-north1'];
 const statuses = ['Running', 'Stopped', 'Available', 'Inactive'];
 const agents = ['ZombieDetectorAgent', 'ResourceOptimizer', 'CostAnalyzer'];
@@ -146,7 +130,6 @@ const recommendations = [
   'Instance stopped for over 60 days. Safe to delete.',
   'Cluster has no active workloads. Consider deletion or hibernation.',
   'Low utilization for expensive instance type. Consider rightsizing.',
-  'Storage bucket not accessed in 120+ days. Verify if still needed.',
   'Load balancer has no backend services. Consider removal.'
 ];
 const projects = ['my-project-dev', 'analytics-prod', 'legacy-systems', 'ci-cd-testing', 'backend-staging', 'data-platform', 'backup-systems', 'infra-dev'];
@@ -158,7 +141,6 @@ const labelsList = [
   ['env:test', 'auto-stop'],
   ['env:staging', 'team:backend'],
   ['env:prod', 'team:data'],
-  ['backup', 'archive'],
   ['env:dev', 'team:infra']
 ];
 const tagsList = [
@@ -168,7 +150,6 @@ const tagsList = [
   ['testing', 'ci-cd'],
   ['kubernetes', 'staging'],
   ['data-processing', 'etl'],
-  ['storage', 'backup'],
   ['networking', 'load-balancer']
 ];
 
@@ -178,8 +159,8 @@ export const mockZombieResources: ZombieResource[] = [
     const idx = i % baseResources.length;
     return {
       ...baseResources[idx],
-      id: (i + 9).toString(),
-      name: `${baseResources[idx].name}-${i + 9}`,
+      id: (i + 8).toString(),
+      name: `${baseResources[idx].name}-${i + 8}`,
       type: types[i % types.length],
       region: regions[i % regions.length],
       status: statuses[i % statuses.length],
@@ -192,11 +173,11 @@ export const mockZombieResources: ZombieResource[] = [
       project: projects[i % projects.length],
       zone: zones[i % zones.length],
       cost: parseFloat((Math.random() * 300).toFixed(2)),
-    };
+    } as ZombieResource;
   })
 ];
 
 export const uniqueRegions = [...new Set(mockZombieResources.map(r => r.region))];
-export const uniqueResourceTypes = [...new Set(mockZombieResources.map(r => r.type))];
+export const uniqueResourceTypes = [...new Set(mockZombieResources.map(r => r.type))].filter(type => type !== 'Storage');
 export const uniqueLabels = [...new Set(mockZombieResources.flatMap(r => r.labels))];
 export const uniqueTags = [...new Set(mockZombieResources.flatMap(r => r.tags))];

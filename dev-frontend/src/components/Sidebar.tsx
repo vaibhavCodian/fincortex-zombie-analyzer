@@ -26,7 +26,6 @@ const navigationItems = [
   { id: 'vm-instances', label: 'VM Instances', icon: Server, count: 3 },
   { id: 'gke-clusters', label: 'GKE Clusters', icon: Container, count: 2 },
   { id: 'cloud-sql', label: 'Cloud SQL', icon: Database, count: 1 },
-  { id: 'storage', label: 'Storage', icon: Archive, count: 1 },
   { id: 'other', label: 'Other Resources', icon: Archive, count: 1 },
 ];
 
@@ -42,12 +41,6 @@ const navigationGroups = [
     header: 'Database',
     items: [
       { id: 'cloud-sql', label: 'Cloud SQL', icon: Database, count: 1 },
-    ],
-  },
-  {
-    header: 'Storage',
-    items: [
-      { id: 'storage', label: 'Storage', icon: Archive, count: 1 },
     ],
   },
   {
