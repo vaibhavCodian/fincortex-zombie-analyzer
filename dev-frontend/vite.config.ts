@@ -6,4 +6,5 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  base: '/fincortex-zombie-analyzer/', // Ensure correct base for GitHub Pages
 });
