@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, ChevronDown, Bell, HelpCircle, Grid3X3, User, Cloud } from 'lucide-react';
+import { Search, ChevronDown, HelpCircle, Grid3X3, User, Cloud } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { SidebarToggle } from './SidebarToggle'; // Import if you have this component
 
@@ -114,18 +114,6 @@ export function Topbar({ searchQuery, onSearchChange, isCollapsed, onToggleSideb
                           rounded-lg transition-colors focus:outline-none focus:ring-2 
                           focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gcp-900">
           <HelpCircle className="w-5 h-5" />
-        </button>
-        <button className="p-2 text-gcp-600 dark:text-gcp-400 hover:text-gcp-900 
-                          dark:hover:text-gcp-100 hover:bg-gcp-100 dark:hover:bg-gcp-800 
-                          rounded-lg transition-colors focus:outline-none focus:ring-2 
-                          focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gcp-900">
-          <Bell className="w-5 h-5" />
-        </button>
-        <button className="p-2 text-gcp-600 dark:text-gcp-400 hover:text-gcp-900 
-                          dark:hover:text-gcp-100 hover:bg-gcp-100 dark:hover:bg-gcp-800 
-                          rounded-lg transition-colors focus:outline-none focus:ring-2 
-                          focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gcp-900">
-          <Grid3X3 className="w-5 h-5" />
         </button>
         <ThemeToggle />
         <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center 

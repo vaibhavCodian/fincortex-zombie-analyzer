@@ -132,7 +132,7 @@ export function ResourceTable({ resources, filters }: ResourceTableProps) {
           ) : (
             <div className="overflow-x-auto custom-scrollbar">
               <table className="min-w-full divide-y divide-gcp-200 dark:divide-gcp-800">
-                <thead className="bg-white/80 dark:bg-gcp-900/80 sticky top-[64px] z-10 shadow-sm backdrop-blur-xl">
+                <thead className="bg-white/80 dark:bg-gcp-900/80 sticky top-0 z-10 shadow-sm backdrop-blur-xl">
                   <tr>
                     <th className="px-6 py-3">
                       <SortableHeader
@@ -176,7 +176,7 @@ export function ResourceTable({ resources, filters }: ResourceTableProps) {
                         sortIndicator={getSortIndicator('cpuUsage')}
                       >CPU Usage</SortableHeader>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gcp-500 dark:text-gcp-400 uppercase tracking-wider">Actions</th>
+                    {/* Remove Actions column header */}
                   </tr>
                 </thead>
                 <tbody className="bg-white/70 dark:bg-gcp-900/70 divide-y divide-gcp-200 dark:divide-gcp-800">
@@ -189,24 +189,7 @@ export function ResourceTable({ resources, filters }: ResourceTableProps) {
                       <td className="px-6 py-4 whitespace-nowrap"><StatusChip status={resource.status} size="sm" /></td>
                       <td className="px-6 py-4 whitespace-nowrap text-gcp-500 dark:text-gcp-400">{formatLastActive(resource.lastActive)}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-primary-600 dark:text-primary-400 font-semibold">{resource.cpuUsage?.toFixed(1)}%</td>
-                      <td className="px-6 py-4 whitespace-nowrap flex gap-2">
-                        {/* Action icons with tooltips and feedback */}
-                        <Tooltip content="View Details">
-                          <button className="p-2 rounded-lg hover:bg-primary-100/60 dark:hover:bg-primary-900/30 transition-transform duration-150 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                            <svg className="w-5 h-5 text-gcp-500 dark:text-gcp-400 group-hover:scale-110 group-hover:rotate-6 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                          </button>
-                        </Tooltip>
-                        <Tooltip content="Edit Resource">
-                          <button className="p-2 rounded-lg hover:bg-primary-100/60 dark:hover:bg-primary-900/30 transition-transform duration-150 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                            <svg className="w-5 h-5 text-gcp-500 dark:text-gcp-400 group-hover:scale-110 group-hover:rotate-6 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536M9 11l6 6M3 21h6l11-11a2.828 2.828 0 00-4-4L5 17v4z" /></svg>
-                          </button>
-                        </Tooltip>
-                        <Tooltip content="Delete Resource">
-                          <button className="p-2 rounded-lg hover:bg-error-100/60 dark:hover:bg-error-900/30 transition-transform duration-150 active:scale-95 focus:outline-none focus:ring-2 focus:ring-error-500">
-                            <svg className="w-5 h-5 text-error-500 dark:text-error-400 group-hover:scale-110 group-hover:rotate-6 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4a2 2 0 012 2v2H7V5a2 2 0 012-2zm0 0V3m0 2v2" /></svg>
-                          </button>
-                        </Tooltip>
-                      </td>
+                      {/* Remove Actions cell */}
                     </tr>
                   ))}
                 </tbody>

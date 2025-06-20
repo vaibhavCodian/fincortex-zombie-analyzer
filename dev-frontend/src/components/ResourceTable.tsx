@@ -132,7 +132,7 @@ export function ResourceTable({ resources, filters }: ResourceTableProps) {
           ) : (
             <div className="overflow-x-auto custom-scrollbar">
               <table className="min-w-full divide-y divide-gcp-200 dark:divide-gcp-800">
-                <thead className="bg-white/80 dark:bg-gcp-900/80 sticky top-[64px] z-10 shadow-sm backdrop-blur-xl">
+                <thead className="bg-white/80 dark:bg-gcp-900/80 sticky top-0 z-10 shadow-sm backdrop-blur-xl">
                   <tr>
                     <th className="px-6 py-3">
                       <SortableHeader
