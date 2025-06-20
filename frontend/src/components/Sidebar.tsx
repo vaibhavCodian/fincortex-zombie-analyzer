@@ -61,7 +61,7 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, onToggleS
       <button
         onClick={() => onSectionChange(item.id)}
         className={clsx(
-          'w-full flex items-center justify-between rounded-xl transition-all duration-200 group',
+          'w-full flex items-center justify-between rounded-none transition-all duration-200 group',
           'text-left focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
           'dark:focus:ring-offset-gcp-900',
           activeBorder,
@@ -137,7 +137,7 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, onToggleS
       <button
         onClick={() => onSectionChange('settings')}
         className={clsx(
-          'w-full flex items-center rounded-xl transition-all duration-200',
+          'w-full flex items-center rounded-none transition-all duration-200',
           'text-left focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
           'dark:focus:ring-offset-gcp-900',
           activeBorder,
@@ -194,7 +194,7 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, onToggleS
       <div
         className={clsx(
           'sticky top-0 z-10 flex items-center transition-all duration-300 ease-in-out',
-          'shadow-elevation-1 backdrop-blur-xl rounded-b-2xl',
+          'shadow-elevation-1 backdrop-blur-xl rounded-none',
           {
             'p-2': isCollapsed,
             'p-5 pb-4': !isCollapsed,
@@ -211,17 +211,12 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, onToggleS
           <SidebarToggle isCollapsed={isCollapsed} onToggle={onToggleSidebar} />
         </div>
         <div
-          className={clsx(
-            'flex items-center space-x-3 transition-opacity duration-300',
-            {
-              'opacity-100': !isCollapsed,
-              'opacity-0 pointer-events-none': isCollapsed,
-            }
-          )}
+          className="flex items-center"
           style={{
-            marginLeft: '1.25rem',
+            marginLeft: isCollapsed ? 0 : '1rem',
             marginTop: '2px',
             minWidth: 0,
+            display: isCollapsed ? 'none' : undefined,
           }}
         >
           <span className="flex items-center">
@@ -243,7 +238,7 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, onToggleS
       )}>
         {/* Agent Status */}
         {!isCollapsed && (
-          <div className="mb-3 p-3 bg-white/70 dark:bg-dark-card/80 rounded-xl border border-gcp-200 dark:border-dark-border shadow-elevation-1 backdrop-blur-xl transition-all duration-300 animate-fade-in">
+          <div className="mb-3 p-3 bg-white/70 dark:bg-dark-card/80 rounded-none shadow-elevation-1 backdrop-blur-xl transition-all duration-300 animate-fade-in">
             <div className="flex items-center space-x-2 mb-2">
               <Activity className="w-4 h-4 text-success-500 flex-shrink-0 animate-fade-in" />
               <span className="text-label-medium font-medium text-gcp-900 dark:text-dark-text truncate">Agent Status</span>
@@ -252,7 +247,7 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, onToggleS
             <div className="text-body-small text-gcp-500 dark:text-dark-muted truncate">Last scan: 2 hours ago</div>
             {/* Scan Button */}
             <button
-              className="mt-3 w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-r from-primary-500 to-primary-400 hover:from-primary-600 hover:to-primary-500 text-white text-sm font-medium transition-transform focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-dark-bg shadow-elevation-2 animate-fade-in active:scale-95"
+              className="mt-3 w-full flex items-center rounded-sm justify-center gap-2 px-3 py-2 bg-gradient-to-r from-primary-500 to-primary-400 hover:from-primary-600 hover:to-primary-500 text-white text-sm font-medium transition-transform focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-dark-bg shadow-elevation-2 animate-fade-in active:scale-95"
               onClick={() => {/* trigger scan logic here */}}
               type="button"
             >
@@ -271,7 +266,7 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, onToggleS
             {/* Scan Button (icon only) */}
             <Tooltip content="Scan" placement="right">
               <button
-                className="flex items-center justify-center p-2 rounded-xl bg-gradient-to-r from-primary-500 to-primary-400 hover:from-primary-600 hover:to-primary-500 text-white transition-transform focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-dark-bg shadow-elevation-2 animate-fade-in active:scale-95"
+                className="flex items-center justify-center p-2 rounded-none bg-gradient-to-r from-primary-500 to-primary-400 hover:from-primary-600 hover:to-primary-500 text-white transition-transform focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-dark-bg shadow-elevation-2 animate-fade-in active:scale-95"
                 onClick={() => {/* trigger scan logic here */}}
                 type="button"
               >

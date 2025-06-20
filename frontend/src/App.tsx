@@ -9,6 +9,7 @@ import { useSidebar } from './hooks/useSidebar';
 import clsx from 'clsx';
 import { FaServer, FaBoxOpen, FaDatabase } from 'react-icons/fa';
 import { SiKubernetes, SiGooglecloud, SiMinio } from 'react-icons/si';
+import SettingsPage from './components/SettingsPage';
 
 function App() {
   const [activeSection, setActiveSection] = useState('overview');
@@ -68,24 +69,19 @@ function App() {
         <Topbar 
           searchQuery={filters.search} 
           onSearchChange={handleSearchChange}
+          isCollapsed={isCollapsed}
+          onToggleSidebar={toggleSidebar}
         />
         <div className="flex">
           <Sidebar 
             activeSection={activeSection} 
             onSectionChange={setActiveSection}
             isCollapsed={isCollapsed}
+            onToggleSidebar={toggleSidebar}
           />
           <main className="flex-1 p-6">
             <div className="max-w-4xl mx-auto">
-              <div className="bg-white dark:bg-dark-card border dark:border-dark-border rounded-lg shadow">
-                <h1 className="text-headline-medium font-medium text-gcp-900 dark:text-gcp-100 mb-4">
-                  Settings
-                </h1>
-                <div className="text-body-medium text-gcp-600 dark:text-gcp-400">
-                  Settings panel coming soon. Configure agent preferences, notification settings, 
-                  and resource detection rules here.
-                </div>
-              </div>
+              <SettingsPage />
             </div>
           </main>
         </div>
@@ -124,10 +120,7 @@ function App() {
             resourceTypeLabel={
               activeSection === 'overview'
                 ? undefined
-                : <>
-                    {resourceTypeIcons[activeSection]}
-                    {resourceTypeLabels[activeSection] || ''}
-                  </>
+                : resourceTypeLabels[activeSection] || ''
             }
           />
           <div className="flex-1 p-6">

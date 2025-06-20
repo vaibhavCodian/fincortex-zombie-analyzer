@@ -98,7 +98,7 @@ export function ResourceTable({ resources, filters }: ResourceTableProps) {
   };
 
   return (
-    <div className="bg-white/70 dark:bg-dark-card/80 rounded-xl shadow-elevation-2 overflow-hidden border border-gcp-200 dark:border-dark-border backdrop-blur-xl animate-fade-in transition-all duration-200">
+    <div className="bg-white/70 dark:bg-dark-card/80 rounded border border-gcp-200 dark:border-dark-border shadow-elevation-2 overflow-hidden backdrop-blur-xl animate-fade-in transition-all duration-200">
       {/* Table Header */}
       <div className="px-6 py-4 border-b border-gcp-200 dark:border-dark-border bg-white/80 dark:bg-gcp-900/80 sticky top-0 z-10 shadow-sm backdrop-blur-xl">
         {/* Add KPI toggle and sticky header */}
@@ -106,14 +106,14 @@ export function ResourceTable({ resources, filters }: ResourceTableProps) {
           <h2 className="text-lg font-semibold text-gcp-900 dark:text-gcp-100">Zombie Resources</h2>
           <div className="flex items-center gap-2">
             <button
-              className="px-3 py-1 rounded-lg bg-gradient-to-r from-primary-500 to-primary-400 hover:from-primary-600 hover:to-primary-500 text-white text-sm font-medium shadow-elevation-1 transition-transform duration-150 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-dark-bg"
+              className="px-3 py-1 rounded bg-gradient-to-r from-primary-500 to-primary-400 hover:from-primary-600 hover:to-primary-500 text-white text-sm font-medium shadow-elevation-1 transition-transform duration-150 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-dark-bg"
               onClick={() => setShowKPI(v => !v)}
             >
               {showKPI ? 'Table' : 'KPIs'}
             </button>
             {sortedData.length > 0 && (
               <button
-                className="px-3 py-1 rounded-lg bg-gcp-100 dark:bg-gcp-800 text-gcp-700 dark:text-gcp-200 text-sm font-medium hover:bg-gcp-200 dark:hover:bg-gcp-700 transition-colors"
+                className="px-3 py-1 rounded bg-gcp-100 dark:bg-gcp-800 text-gcp-700 dark:text-gcp-200 text-sm font-medium hover:bg-gcp-200 dark:hover:bg-gcp-700 transition-colors"
                 onClick={clearSort}
               >
                 Clear Sort
@@ -124,7 +124,7 @@ export function ResourceTable({ resources, filters }: ResourceTableProps) {
       </div>
       {/* KPI/Graph View or Table */}
       {showKPI ? (
-        <div className="p-6 bg-white/80 dark:bg-gcp-900/80 rounded-b-xl animate-fade-in">
+        <div className="p-6 bg-white/80 dark:bg-gcp-900/80 rounded-b animate-fade-in">
           <ResourceVisualizer resources={filteredResources} isVisible={true} showLegend />
         </div>
       ) : (
