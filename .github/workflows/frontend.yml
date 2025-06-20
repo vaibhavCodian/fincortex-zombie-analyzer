@@ -12,7 +12,10 @@ on:
       - '.github/workflows/frontend.yml'
 
 env:
-  DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+  PROJECT_ID: ${{ vars.PROJECT_ID }}
+  REGION: ${{ vars.REGION }}
+  FRONTEND_SERVICE_NAME: ${{ vars.FRONTEND_CLOUDRUN_SERVICE }}
+  ARTIFACT_REGISTRY: ${{ vars.ARTIFACT_REGISTRY }}
 
 jobs:
   build-and-deploy:
@@ -25,24 +28,37 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      # Authenticate to Google Cloud using Workload Identity Federation
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
         with:
-          node-version: 20
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
 
-      - name: Lint
-        run: npm run lint
+      - name: Build frontend static files
+        run: npm ci && npm run build
 
-      - name: Build
-        run: npm run build
-
-      # Example: Deploy to Vercel (replace with your provider)
-      - name: Deploy to Cloud
+      - name: Build Docker image
         run: |
-          npx vercel --prod --token $DEPLOY_TOKEN --confirm
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          IMAGE_URI="$REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY/$FRONTEND_SERVICE_NAME-frontend"
+          gcloud builds submit --tag $IMAGE_URI
+
+      - name: Deploy to Cloud Run (Frontend)
+        run: |
+          IMAGE_URI="$REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY/$FRONTEND_SERVICE_NAME-frontend"
+          gcloud run deploy $FRONTEND_SERVICE_NAME-frontend \
+            --image $IMAGE_URI \
+            --region $REGION \
+            --platform managed \
+            --allow-unauthenticated
+
+      - name: Notify deployment success
+        run: |
+          echo "Deployment to Cloud Run (Frontend) completed successfully." 
+          # Optionally, you can send a notification to Slack, email, etc.
+          # For example, using curl to send a message to a Slack webhook:
+          # curl -X POST -H 'Content-type: application/json' --data '{"text":"Deployment to Cloud Run (Frontend) completed successfully."}' ${{ secrets.SLACK_WEBHOOK_URL }}

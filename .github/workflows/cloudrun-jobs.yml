@@ -15,6 +15,7 @@ env:
   PROJECT_ID: ${{ vars.PROJECT_ID }}
   REGION: ${{ vars.REGION }}
   JOB_NAME: ${{ vars.CLOUDRUN_JOB }}
+  ARTIFACT_REGISTRY: ${{ vars.ARTIFACT_REGISTRY }}
 
 jobs:
   build-and-deploy:
@@ -40,12 +41,14 @@ jobs:
 
       - name: Build Docker image
         run: |
-          gcloud builds submit --tag gcr.io/$PROJECT_ID/$JOB_NAME
+          IMAGE_URI="$REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY/$JOB_NAME-job"
+          gcloud builds submit --tag $IMAGE_URI
 
       - name: Deploy Cloud Run Job
         run: |
+          IMAGE_URI="$REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY/$JOB_NAME-job"
           gcloud run jobs deploy $JOB_NAME \
-            --image gcr.io/$PROJECT_ID/$JOB_NAME \
+            --image $IMAGE_URI \
             --region $REGION \
             --command "<your-command>" \
             --max-retries 3 \

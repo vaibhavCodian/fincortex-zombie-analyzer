@@ -4,24 +4,25 @@ on:
   push:
     branches: [main]
     paths:
-      - 'backend/**'
+      - 'services/backend/**'
       - '.github/workflows/backend.yml'
   pull_request:
     paths:
-      - 'backend/**'
+      - 'services/backend/**'
       - '.github/workflows/backend.yml'
 
 env:
   PROJECT_ID: ${{ vars.PROJECT_ID }}
   REGION: ${{ vars.REGION }}
-  SERVICE_NAME: ${{ vars.CLOUDRUN_SERVICE }}
+  SERVICE_NAME: ${{ vars.BACKEND_CLOUDRUN_SERVICE }}
+  ARTIFACT_REGISTRY: ${{ vars.ARTIFACT_REGISTRY }}
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: backend
+        working-directory: services/backend
 
     steps:
       - name: Checkout code
@@ -40,12 +41,14 @@ jobs:
 
       - name: Build Docker image
         run: |
-          gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
+          IMAGE_URI="$REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY/$SERVICE_NAME-backend"
+          gcloud builds submit --tag $IMAGE_URI
 
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy $SERVICE_NAME \
-            --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+          IMAGE_URI="$REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY/$SERVICE_NAME-backend"
+          gcloud run deploy $SERVICE_NAME-backend \
+            --image $IMAGE_URI \
             --region $REGION \
             --platform managed \
             --allow-unauthenticated

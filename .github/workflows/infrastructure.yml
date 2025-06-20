@@ -10,17 +10,18 @@ on:
     paths:
       - 'infrastructure/terraform/**'
       - '.github/workflows/infrastructure.yml'
+  workflow_dispatch:
 
 env:
   TF_VAR_project_id: ${{ vars.PROJECT_ID }}
+  REGION: ${{ vars.REGION }}
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: infrastructure/terraform
-
+        working-directory: infrastructure/terraform/env/dev
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -45,7 +46,15 @@ jobs:
       - name: Terraform Plan
         run: terraform plan
 
-      # Uncomment to enable automatic apply on main branch
-      # - name: Terraform Apply
-      #   if: github.ref == 'refs/heads/main'
-      #   run: terraform apply -auto-approve
+      - name: Wait for manual approval before apply
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: ${{ vars.TERRAFORM_APPROVERS }}
+          minimum-approvals: 1
+          issue-title: "Terraform Apply Approval"
+          issue-body: "Approve to apply Terraform changes to the infrastructure."
+
+      - name: Terraform Apply
+        if: ${{ success() }}
+        run: terraform apply -auto-approve

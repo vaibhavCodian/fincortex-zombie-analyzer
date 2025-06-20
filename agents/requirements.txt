@@ -1,0 +1,5 @@
+google-cloud-compute
+google-adk
+python-dotenv
+vertexai
+google-cloud-aiplatform
