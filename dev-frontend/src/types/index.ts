@@ -1,18 +1,18 @@
 export interface ZombieResource {
   id: string;
   name: string;
-  type: string;
+  type: 'VM' | 'GKE' | 'SQL' | 'Storage' | 'LoadBalancer';
   region: string;
-  status: string;
+  status: 'Running' | 'Stopped' | 'Inactive' | 'Available' | 'Error';
   labels: string[];
   tags: string[];
   cpuUsage: number;
   lastActive: string;
   agent: string;
   recommendation: string;
-  project: string;
-  zone: string;
-  cost: number;
+  project?: string;
+  zone?: string;
+  cost?: number;
 }
 
 export interface FilterState {
@@ -22,4 +22,9 @@ export interface FilterState {
   tags: string[];
   dateRange: string;
   search: string;
+}
+
+export interface SortConfig {
+  key: keyof ZombieResource | null;
+  direction: 'asc' | 'desc';
 }
