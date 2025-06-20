@@ -8,6 +8,7 @@ import { Tooltip } from './Tooltip';
 import clsx from 'clsx';
 import { FaServer, FaBoxOpen, FaDatabase } from 'react-icons/fa';
 import { SiKubernetes, SiMinio } from 'react-icons/si';
+import { SortableHeader } from './SortableHeader';
 
 interface ResourceTableProps {
   resources: ZombieResource[];
@@ -133,13 +134,48 @@ export function ResourceTable({ resources, filters }: ResourceTableProps) {
               <table className="min-w-full divide-y divide-gcp-200 dark:divide-gcp-800">
                 <thead className="bg-white/80 dark:bg-gcp-900/80 sticky top-[64px] z-10 shadow-sm backdrop-blur-xl">
                   <tr>
-                    {/* Example headers, replace with your actual columns */}
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gcp-500 dark:text-gcp-400 uppercase tracking-wider">Resource Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gcp-500 dark:text-gcp-400 uppercase tracking-wider">Type</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gcp-500 dark:text-gcp-400 uppercase tracking-wider">Region</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gcp-500 dark:text-gcp-400 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gcp-500 dark:text-gcp-400 uppercase tracking-wider">Last Active</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gcp-500 dark:text-gcp-400 uppercase tracking-wider">CPU Usage</th>
+                    <th className="px-6 py-3">
+                      <SortableHeader
+                        sortKey="name"
+                        onSort={handleSort}
+                        sortIndicator={getSortIndicator('name')}
+                      >Resource Name</SortableHeader>
+                    </th>
+                    <th className="px-6 py-3">
+                      <SortableHeader
+                        sortKey="type"
+                        onSort={handleSort}
+                        sortIndicator={getSortIndicator('type')}
+                      >Type</SortableHeader>
+                    </th>
+                    <th className="px-6 py-3">
+                      <SortableHeader
+                        sortKey="region"
+                        onSort={handleSort}
+                        sortIndicator={getSortIndicator('region')}
+                      >Region</SortableHeader>
+                    </th>
+                    <th className="px-6 py-3">
+                      <SortableHeader
+                        sortKey="status"
+                        onSort={handleSort}
+                        sortIndicator={getSortIndicator('status')}
+                      >Status</SortableHeader>
+                    </th>
+                    <th className="px-6 py-3">
+                      <SortableHeader
+                        sortKey="lastActive"
+                        onSort={handleSort}
+                        sortIndicator={getSortIndicator('lastActive')}
+                      >Last Active</SortableHeader>
+                    </th>
+                    <th className="px-6 py-3">
+                      <SortableHeader
+                        sortKey="cpuUsage"
+                        onSort={handleSort}
+                        sortIndicator={getSortIndicator('cpuUsage')}
+                      >CPU Usage</SortableHeader>
+                    </th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gcp-500 dark:text-gcp-400 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
