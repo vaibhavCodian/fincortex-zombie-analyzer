@@ -1,60 +1,91 @@
 import { useState, useMemo } from 'react';
-import type { ZombieResource, SortConfig } from '../types';
+import { ZombieResource } from '../types';
 
-// Placeholder for useMultiSort hook
+export interface SortConfig {
+  key: keyof ZombieResource;
+  direction: 'asc' | 'desc';
+}
+
 export function useMultiSort(data: ZombieResource[]) {
   const [sortConfigs, setSortConfigs] = useState<SortConfig[]>([]);
 
   const handleSort = (key: keyof ZombieResource, isShiftClick: boolean = false) => {
     setSortConfigs(prev => {
       if (!isShiftClick) {
-        const existing = prev.find(cfg => cfg.key === key);
-        if (existing) {
-          return [{ key, direction: existing.direction === 'asc' ? 'desc' : 'asc' }];
+        // Single column sort
+        const existingSort = prev.find(config => config.key === key);
+        if (existingSort) {
+          return [{
+            key,
+            direction: existingSort.direction === 'asc' ? 'desc' : 'asc'
+          }];
         }
         return [{ key, direction: 'asc' }];
       } else {
-        const existing = prev.find(cfg => cfg.key === key);
-        if (existing) {
-          return prev.map(cfg =>
-            cfg.key === key
-              ? { ...cfg, direction: cfg.direction === 'asc' ? 'desc' : 'asc' }
-              : cfg
-          );
+        // Multi-column sort
+        const existingIndex = prev.findIndex(config => config.key === key);
+        if (existingIndex >= 0) {
+          const newConfigs = [...prev];
+          newConfigs[existingIndex] = {
+            key,
+            direction: prev[existingIndex].direction === 'asc' ? 'desc' : 'asc'
+          };
+          return newConfigs;
         }
         return [...prev, { key, direction: 'asc' }];
       }
     });
   };
 
+  // Overload for compatibility with SortableHeader (string key)
   const handleSortString = (key: string, isShiftClick: boolean = false) => {
     handleSort(key as keyof ZombieResource, isShiftClick);
   };
 
   const sortedData = useMemo(() => {
     if (sortConfigs.length === 0) return data;
+
     return [...data].sort((a, b) => {
       for (const config of sortConfigs) {
-        if (!config.key) continue;
-        const aValue = a[config.key];
-        const bValue = b[config.key];
-        if (aValue < bValue) return config.direction === 'asc' ? -1 : 1;
-        if (aValue > bValue) return config.direction === 'asc' ? 1 : -1;
+        const aVal = a[config.key];
+        const bVal = b[config.key];
+        
+        let comparison = 0;
+        
+        // Handle different data types
+        if (typeof aVal === 'string' && typeof bVal === 'string') {
+          comparison = aVal.localeCompare(bVal);
+        } else if (typeof aVal === 'number' && typeof bVal === 'number') {
+          comparison = aVal - bVal;
+        } else if (config.key === 'lastActive') {
+          const aDate = new Date(aVal as string);
+          const bDate = new Date(bVal as string);
+          comparison = aDate.getTime() - bDate.getTime();
+        } else {
+          comparison = String(aVal).localeCompare(String(bVal));
+        }
+        
+        if (comparison !== 0) {
+          return config.direction === 'asc' ? comparison : -comparison;
+        }
       }
       return 0;
     });
   }, [data, sortConfigs]);
 
   const getSortIndicator = (columnKey: keyof ZombieResource) => {
-    const config = sortConfigs.find(cfg => cfg.key === columnKey);
-    if (!config) return null;
+    const sortIndex = sortConfigs.findIndex(config => config.key === columnKey);
+    if (sortIndex === -1) return null;
+    
     return {
-      direction: config.direction,
-      priority: sortConfigs.length > 1 ? sortConfigs.findIndex(cfg => cfg.key === columnKey) + 1 : null,
+      direction: sortConfigs[sortIndex].direction,
+      priority: sortConfigs.length > 1 ? sortIndex + 1 : null
     };
   };
 
-  const clearSort = () => setSortConfigs([]);
+  const clearSort = () => {
+    setSortConfigs([]);
+  };
 
   return {
     sortedData,
