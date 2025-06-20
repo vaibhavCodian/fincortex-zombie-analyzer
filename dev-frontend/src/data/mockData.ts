@@ -1,6 +1,10 @@
 import { ZombieResource } from '../types';
 
-export const mockZombieResources: ZombieResource[] = [
+function randomDate(start: Date, end: Date) {
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toISOString();
+}
+
+const baseResources: ZombieResource[] = [
   {
     id: '1',
     name: 'dev-instance-01',
@@ -129,6 +133,67 @@ export const mockZombieResources: ZombieResource[] = [
     zone: 'europe-north1-a',
     cost: 18.20
   }
+];
+
+const types = ['VM', 'GKE', 'SQL', 'Storage', 'LoadBalancer'];
+const regions = ['us-central1', 'us-east1', 'europe-west1', 'asia-southeast1', 'us-west2', 'europe-north1'];
+const statuses = ['Running', 'Stopped', 'Available', 'Inactive'];
+const agents = ['ZombieDetectorAgent', 'ResourceOptimizer', 'CostAnalyzer'];
+const recommendations = [
+  'Delete or shutdown VM. Low CPU usage and no ingress traffic in 30 days.',
+  'Consider scaling down cluster. Very low utilization detected.',
+  'Database instance shows no recent connections. Consider deletion.',
+  'Instance stopped for over 60 days. Safe to delete.',
+  'Cluster has no active workloads. Consider deletion or hibernation.',
+  'Low utilization for expensive instance type. Consider rightsizing.',
+  'Storage bucket not accessed in 120+ days. Verify if still needed.',
+  'Load balancer has no backend services. Consider removal.'
+];
+const projects = ['my-project-dev', 'analytics-prod', 'legacy-systems', 'ci-cd-testing', 'backend-staging', 'data-platform', 'backup-systems', 'infra-dev'];
+const zones = ['us-central1-a', 'us-east1-b', 'europe-west1-c', 'asia-southeast1-a', 'us-west2-a', 'europe-north1-a'];
+const labelsList = [
+  ['env:dev', 'owner:team-alpha'],
+  ['env:prod', 'team:analytics'],
+  ['env:staging', 'legacy'],
+  ['env:test', 'auto-stop'],
+  ['env:staging', 'team:backend'],
+  ['env:prod', 'team:data'],
+  ['backup', 'archive'],
+  ['env:dev', 'team:infra']
+];
+const tagsList = [
+  ['development', 'testing'],
+  ['kubernetes', 'analytics'],
+  ['database', 'mysql'],
+  ['testing', 'ci-cd'],
+  ['kubernetes', 'staging'],
+  ['data-processing', 'etl'],
+  ['storage', 'backup'],
+  ['networking', 'load-balancer']
+];
+
+export const mockZombieResources: ZombieResource[] = [
+  ...baseResources,
+  ...Array.from({ length: 120 }).map((_, i) => {
+    const idx = i % baseResources.length;
+    return {
+      ...baseResources[idx],
+      id: (i + 9).toString(),
+      name: `${baseResources[idx].name}-${i + 9}`,
+      type: types[i % types.length],
+      region: regions[i % regions.length],
+      status: statuses[i % statuses.length],
+      labels: labelsList[i % labelsList.length],
+      tags: tagsList[i % tagsList.length],
+      cpuUsage: parseFloat((Math.random() * 5).toFixed(1)),
+      lastActive: randomDate(new Date(2022, 0, 1), new Date(2023, 5, 1)),
+      agent: agents[i % agents.length],
+      recommendation: recommendations[i % recommendations.length],
+      project: projects[i % projects.length],
+      zone: zones[i % zones.length],
+      cost: parseFloat((Math.random() * 300).toFixed(2)),
+    };
+  })
 ];
 
 export const uniqueRegions = [...new Set(mockZombieResources.map(r => r.region))];

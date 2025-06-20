@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ExternalLink, Eye, Trash2, MoreHorizontal } from 'lucide-react';
 import { StatusChip } from './StatusChip';
 import { ResourceVisualizer } from './ResourceVisualizer';
@@ -17,6 +17,8 @@ interface ResourceTableProps {
 
 export function ResourceTable({ resources, filters }: ResourceTableProps) {
   const [showKPI, setShowKPI] = React.useState(false);
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 15;
 
   const filteredResources = useMemo(() => {
     return resources.filter((resource) => {
@@ -75,6 +77,14 @@ export function ResourceTable({ resources, filters }: ResourceTableProps) {
 
   const { sortedData, handleSort, getSortIndicator, clearSort } = useMultiSort(filteredResources);
 
+  // Pagination logic
+  const totalRows = sortedData.length;
+  const totalPages = Math.ceil(totalRows / rowsPerPage);
+  const paginatedData = useMemo(() => {
+    const start = (page - 1) * rowsPerPage;
+    return sortedData.slice(start, start + rowsPerPage);
+  }, [sortedData, page]);
+
   const formatLastActive = (lastActive: string) => {
     const date = new Date(lastActive);
     const now = new Date();
@@ -130,88 +140,98 @@ export function ResourceTable({ resources, filters }: ResourceTableProps) {
               <span className="text-gcp-500 dark:text-gcp-400 text-base font-medium">No resources found for the selected filters.</span>
             </div>
           ) : (
-            <div className="overflow-x-auto custom-scrollbar">
-              <table className="min-w-full divide-y divide-gcp-200 dark:divide-gcp-800">
-                <thead className="bg-white/80 dark:bg-gcp-900/80 sticky top-0 z-10 shadow-sm backdrop-blur-xl">
-                  <tr>
-                    <th className="px-6 py-3">
-                      <SortableHeader
-                        sortKey="name"
-                        onSort={handleSort}
-                        sortIndicator={getSortIndicator('name')}
-                      >Resource Name</SortableHeader>
-                    </th>
-                    <th className="px-6 py-3">
-                      <SortableHeader
-                        sortKey="type"
-                        onSort={handleSort}
-                        sortIndicator={getSortIndicator('type')}
-                      >Type</SortableHeader>
-                    </th>
-                    <th className="px-6 py-3">
-                      <SortableHeader
-                        sortKey="region"
-                        onSort={handleSort}
-                        sortIndicator={getSortIndicator('region')}
-                      >Region</SortableHeader>
-                    </th>
-                    <th className="px-6 py-3">
-                      <SortableHeader
-                        sortKey="status"
-                        onSort={handleSort}
-                        sortIndicator={getSortIndicator('status')}
-                      >Status</SortableHeader>
-                    </th>
-                    <th className="px-6 py-3">
-                      <SortableHeader
-                        sortKey="lastActive"
-                        onSort={handleSort}
-                        sortIndicator={getSortIndicator('lastActive')}
-                      >Last Active</SortableHeader>
-                    </th>
-                    <th className="px-6 py-3">
-                      <SortableHeader
-                        sortKey="cpuUsage"
-                        onSort={handleSort}
-                        sortIndicator={getSortIndicator('cpuUsage')}
-                      >CPU Usage</SortableHeader>
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gcp-500 dark:text-gcp-400 uppercase tracking-wider">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white/70 dark:bg-gcp-900/70 divide-y divide-gcp-200 dark:divide-gcp-800">
-                  {sortedData.map(resource => (
-                    <tr key={resource.id} className="hover:bg-primary-50/40 dark:hover:bg-primary-900/10 transition-all duration-150 animate-fade-in">
-                      {/* Example cells, replace with your actual data */}
-                      <td className="px-6 py-4 whitespace-nowrap text-gcp-900 dark:text-gcp-100 font-medium">{resource.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gcp-700 dark:text-gcp-200">{resource.type}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gcp-700 dark:text-gcp-200">{resource.region}</td>
-                      <td className="px-6 py-4 whitespace-nowrap"><StatusChip status={resource.status} size="sm" /></td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gcp-500 dark:text-gcp-400">{formatLastActive(resource.lastActive)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-primary-600 dark:text-primary-400 font-semibold">{resource.cpuUsage?.toFixed(1)}%</td>
-                      <td className="px-6 py-4 whitespace-nowrap flex gap-2">
-                        {/* Action icons with tooltips and feedback */}
-                        <Tooltip content="View Details">
-                          <button className="p-2 rounded-lg hover:bg-primary-100/60 dark:hover:bg-primary-900/30 transition-transform duration-150 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                            <svg className="w-5 h-5 text-gcp-500 dark:text-gcp-400 group-hover:scale-110 group-hover:rotate-6 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                          </button>
-                        </Tooltip>
-                        <Tooltip content="Edit Resource">
-                          <button className="p-2 rounded-lg hover:bg-primary-100/60 dark:hover:bg-primary-900/30 transition-transform duration-150 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                            <svg className="w-5 h-5 text-gcp-500 dark:text-gcp-400 group-hover:scale-110 group-hover:rotate-6 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536M9 11l6 6M3 21h6l11-11a2.828 2.828 0 00-4-4L5 17v4z" /></svg>
-                          </button>
-                        </Tooltip>
-                        <Tooltip content="Delete Resource">
-                          <button className="p-2 rounded-lg hover:bg-error-100/60 dark:hover:bg-error-900/30 transition-transform duration-150 active:scale-95 focus:outline-none focus:ring-2 focus:ring-error-500">
-                            <svg className="w-5 h-5 text-error-500 dark:text-error-400 group-hover:scale-110 group-hover:rotate-6 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4a2 2 0 012 2v2H7V5a2 2 0 012-2zm0 0V3m0 2v2" /></svg>
-                          </button>
-                        </Tooltip>
-                      </td>
+            <>
+              <div className="overflow-x-auto custom-scrollbar">
+                <table className="min-w-full divide-y divide-gcp-200 dark:divide-gcp-800">
+                  <thead className="bg-white/80 dark:bg-gcp-900/80 sticky top-0 z-10 shadow-sm backdrop-blur-xl">
+                    <tr>
+                      <th className="px-6 py-3">
+                        <SortableHeader
+                          sortKey="name"
+                          onSort={handleSort}
+                          sortIndicator={getSortIndicator('name')}
+                        >Resource Name</SortableHeader>
+                      </th>
+                      <th className="px-6 py-3">
+                        <SortableHeader
+                          sortKey="type"
+                          onSort={handleSort}
+                          sortIndicator={getSortIndicator('type')}
+                        >Type</SortableHeader>
+                      </th>
+                      <th className="px-6 py-3">
+                        <SortableHeader
+                          sortKey="region"
+                          onSort={handleSort}
+                          sortIndicator={getSortIndicator('region')}
+                        >Region</SortableHeader>
+                      </th>
+                      <th className="px-6 py-3">
+                        <SortableHeader
+                          sortKey="status"
+                          onSort={handleSort}
+                          sortIndicator={getSortIndicator('status')}
+                        >Status</SortableHeader>
+                      </th>
+                      <th className="px-6 py-3">
+                        <SortableHeader
+                          sortKey="lastActive"
+                          onSort={handleSort}
+                          sortIndicator={getSortIndicator('lastActive')}
+                        >Last Active</SortableHeader>
+                      </th>
+                      <th className="px-6 py-3">
+                        <SortableHeader
+                          sortKey="cpuUsage"
+                          onSort={handleSort}
+                          sortIndicator={getSortIndicator('cpuUsage')}
+                        >CPU Usage</SortableHeader>
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="bg-white/70 dark:bg-gcp-900/70 divide-y divide-gcp-200 dark:divide-gcp-800">
+                    {paginatedData.map(resource => (
+                      <tr key={resource.id} className="hover:bg-primary-50/40 dark:hover:bg-primary-900/10 transition-all duration-150 animate-fade-in">
+                        {/* Example cells, replace with your actual data */}
+                        <td className="px-6 py-4 whitespace-nowrap text-gcp-900 dark:text-gcp-100 font-medium">{resource.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gcp-700 dark:text-gcp-200">{resource.type}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gcp-700 dark:text-gcp-200">{resource.region}</td>
+                        <td className="px-6 py-4 whitespace-nowrap"><StatusChip status={resource.status} size="sm" /></td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gcp-500 dark:text-gcp-400">{formatLastActive(resource.lastActive)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-primary-600 dark:text-primary-400 font-semibold">{resource.cpuUsage?.toFixed(1)}%</td>
+                        {/* Remove Actions cell */}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {/* Pagination Controls */}
+              <div className="flex justify-end items-center gap-2 px-6 py-4 bg-white/80 dark:bg-gcp-900/80 border-t border-gcp-200 dark:border-dark-border">
+                <button
+                  className="px-3 py-1 rounded bg-gcp-100 dark:bg-gcp-800 text-gcp-700 dark:text-gcp-200 text-sm font-medium disabled:opacity-50"
+                  onClick={() => setPage(page - 1)}
+                  disabled={page === 1}
+                >
+                  Previous
+                </button>
+                {Array.from({ length: totalPages }).map((_, idx) => (
+                  <button
+                    key={idx + 1}
+                    className={`px-3 py-1 rounded ${page === idx + 1 ? 'bg-primary-500 text-white' : 'bg-gcp-100 dark:bg-gcp-800 text-gcp-700 dark:text-gcp-200'} text-sm font-medium`}
+                    onClick={() => setPage(idx + 1)}
+                  >
+                    {idx + 1}
+                  </button>
+                ))}
+                <button
+                  className="px-3 py-1 rounded bg-gcp-100 dark:bg-gcp-800 text-gcp-700 dark:text-gcp-200 text-sm font-medium disabled:opacity-50"
+                  onClick={() => setPage(page + 1)}
+                  disabled={page === totalPages}
+                >
+                  Next
+                </button>
+              </div>
+            </>
           )}
         </>
       )}

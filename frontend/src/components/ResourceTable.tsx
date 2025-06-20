@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ExternalLink, Eye, Trash2, MoreHorizontal } from 'lucide-react';
 import { StatusChip } from './StatusChip';
 import { ResourceVisualizer } from './ResourceVisualizer';
@@ -17,6 +17,8 @@ interface ResourceTableProps {
 
 export function ResourceTable({ resources, filters }: ResourceTableProps) {
   const [showKPI, setShowKPI] = React.useState(false);
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 15;
 
   const filteredResources = useMemo(() => {
     return resources.filter((resource) => {
@@ -75,6 +77,14 @@ export function ResourceTable({ resources, filters }: ResourceTableProps) {
 
   const { sortedData, handleSort, getSortIndicator, clearSort } = useMultiSort(filteredResources);
 
+  // Pagination logic
+  const totalRows = sortedData.length;
+  const totalPages = Math.ceil(totalRows / rowsPerPage);
+  const paginatedData = useMemo(() => {
+    const start = (page - 1) * rowsPerPage;
+    return sortedData.slice(start, start + rowsPerPage);
+  }, [sortedData, page]);
+
   const formatLastActive = (lastActive: string) => {
     const date = new Date(lastActive);
     const now = new Date();
@@ -130,71 +140,98 @@ export function ResourceTable({ resources, filters }: ResourceTableProps) {
               <span className="text-gcp-500 dark:text-gcp-400 text-base font-medium">No resources found for the selected filters.</span>
             </div>
           ) : (
-            <div className="overflow-x-auto custom-scrollbar">
-              <table className="min-w-full divide-y divide-gcp-200 dark:divide-gcp-800">
-                <thead className="bg-white/80 dark:bg-gcp-900/80 sticky top-0 z-10 shadow-sm backdrop-blur-xl">
-                  <tr>
-                    <th className="px-6 py-3">
-                      <SortableHeader
-                        sortKey="name"
-                        onSort={handleSort}
-                        sortIndicator={getSortIndicator('name')}
-                      >Resource Name</SortableHeader>
-                    </th>
-                    <th className="px-6 py-3">
-                      <SortableHeader
-                        sortKey="type"
-                        onSort={handleSort}
-                        sortIndicator={getSortIndicator('type')}
-                      >Type</SortableHeader>
-                    </th>
-                    <th className="px-6 py-3">
-                      <SortableHeader
-                        sortKey="region"
-                        onSort={handleSort}
-                        sortIndicator={getSortIndicator('region')}
-                      >Region</SortableHeader>
-                    </th>
-                    <th className="px-6 py-3">
-                      <SortableHeader
-                        sortKey="status"
-                        onSort={handleSort}
-                        sortIndicator={getSortIndicator('status')}
-                      >Status</SortableHeader>
-                    </th>
-                    <th className="px-6 py-3">
-                      <SortableHeader
-                        sortKey="lastActive"
-                        onSort={handleSort}
-                        sortIndicator={getSortIndicator('lastActive')}
-                      >Last Active</SortableHeader>
-                    </th>
-                    <th className="px-6 py-3">
-                      <SortableHeader
-                        sortKey="cpuUsage"
-                        onSort={handleSort}
-                        sortIndicator={getSortIndicator('cpuUsage')}
-                      >CPU Usage</SortableHeader>
-                    </th>
-                    {/* Remove Actions column header */}
-                  </tr>
-                </thead>
-                <tbody className="bg-white/70 dark:bg-gcp-900/70 divide-y divide-gcp-200 dark:divide-gcp-800">
-                  {sortedData.map(resource => (
-                    <tr key={resource.id} className="hover:bg-primary-50/40 dark:hover:bg-primary-900/10 transition-all duration-150 animate-fade-in">
-                      {/* Example cells, replace with your actual data */}
-                      <td className="px-6 py-4 whitespace-nowrap text-gcp-900 dark:text-gcp-100 font-medium">{resource.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gcp-700 dark:text-gcp-200">{resource.type}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gcp-700 dark:text-gcp-200">{resource.region}</td>
-                      <td className="px-6 py-4 whitespace-nowrap"><StatusChip status={resource.status} size="sm" /></td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gcp-500 dark:text-gcp-400">{formatLastActive(resource.lastActive)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-primary-600 dark:text-primary-400 font-semibold">{resource.cpuUsage?.toFixed(1)}%</td>
-                      {/* Remove Actions cell */}
+            <>
+              <div className="overflow-x-auto custom-scrollbar">
+                <table className="min-w-full divide-y divide-gcp-200 dark:divide-gcp-800">
+                  <thead className="bg-white/80 dark:bg-gcp-900/80 sticky top-0 z-10 shadow-sm backdrop-blur-xl">
+                    <tr>
+                      <th className="px-6 py-3">
+                        <SortableHeader
+                          sortKey="name"
+                          onSort={handleSort}
+                          sortIndicator={getSortIndicator('name')}
+                        >Resource Name</SortableHeader>
+                      </th>
+                      <th className="px-6 py-3">
+                        <SortableHeader
+                          sortKey="type"
+                          onSort={handleSort}
+                          sortIndicator={getSortIndicator('type')}
+                        >Type</SortableHeader>
+                      </th>
+                      <th className="px-6 py-3">
+                        <SortableHeader
+                          sortKey="region"
+                          onSort={handleSort}
+                          sortIndicator={getSortIndicator('region')}
+                        >Region</SortableHeader>
+                      </th>
+                      <th className="px-6 py-3">
+                        <SortableHeader
+                          sortKey="status"
+                          onSort={handleSort}
+                          sortIndicator={getSortIndicator('status')}
+                        >Status</SortableHeader>
+                      </th>
+                      <th className="px-6 py-3">
+                        <SortableHeader
+                          sortKey="lastActive"
+                          onSort={handleSort}
+                          sortIndicator={getSortIndicator('lastActive')}
+                        >Last Active</SortableHeader>
+                      </th>
+                      <th className="px-6 py-3">
+                        <SortableHeader
+                          sortKey="cpuUsage"
+                          onSort={handleSort}
+                          sortIndicator={getSortIndicator('cpuUsage')}
+                        >CPU Usage</SortableHeader>
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="bg-white/70 dark:bg-gcp-900/70 divide-y divide-gcp-200 dark:divide-gcp-800">
+                    {paginatedData.map(resource => (
+                      <tr key={resource.id} className="hover:bg-primary-50/40 dark:hover:bg-primary-900/10 transition-all duration-150 animate-fade-in">
+                        {/* Example cells, replace with your actual data */}
+                        <td className="px-6 py-4 whitespace-nowrap text-gcp-900 dark:text-gcp-100 font-medium">{resource.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gcp-700 dark:text-gcp-200">{resource.type}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gcp-700 dark:text-gcp-200">{resource.region}</td>
+                        <td className="px-6 py-4 whitespace-nowrap"><StatusChip status={resource.status} size="sm" /></td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gcp-500 dark:text-gcp-400">{formatLastActive(resource.lastActive)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-primary-600 dark:text-primary-400 font-semibold">{resource.cpuUsage?.toFixed(1)}%</td>
+                        {/* Remove Actions cell */}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {/* Pagination Controls */}
+              <div className="flex justify-end items-center gap-2 px-6 py-4 bg-white/80 dark:bg-gcp-900/80 border-t border-gcp-200 dark:border-dark-border">
+                <button
+                  className="px-3 py-1 rounded bg-gcp-100 dark:bg-gcp-800 text-gcp-700 dark:text-gcp-200 text-sm font-medium disabled:opacity-50"
+                  onClick={() => setPage(page - 1)}
+                  disabled={page === 1}
+                >
+                  Previous
+                </button>
+                {Array.from({ length: totalPages }).map((_, idx) => (
+                  <button
+                    key={idx + 1}
+                    className={`px-3 py-1 rounded ${page === idx + 1 ? 'bg-primary-500 text-white' : 'bg-gcp-100 dark:bg-gcp-800 text-gcp-700 dark:text-gcp-200'} text-sm font-medium`}
+                    onClick={() => setPage(idx + 1)}
+                  >
+                    {idx + 1}
+                  </button>
+                ))}
+                <button
+                  className="px-3 py-1 rounded bg-gcp-100 dark:bg-gcp-800 text-gcp-700 dark:text-gcp-200 text-sm font-medium disabled:opacity-50"
+                  onClick={() => setPage(page + 1)}
+                  disabled={page === totalPages}
+                >
+                  Next
+                </button>
+              </div>
+            </>
           )}
         </>
       )}
