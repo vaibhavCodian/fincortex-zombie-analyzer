@@ -12,6 +12,7 @@
 **/.turbo/
 **/.vite/
 **/.eslintcache
+**/.demo/
 
 # Python & Backend
 **/__pycache__/
