@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, ChevronDown, HelpCircle, Grid3X3, User, Cloud } from 'lucide-react';
+import { Search, ChevronDown, Grid3X3, User, Cloud } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { SidebarToggle } from './SidebarToggle'; // Import if you have this component
 
@@ -109,19 +109,18 @@ export function Topbar({ searchQuery, onSearchChange, isCollapsed, onToggleSideb
           )}
         </div>
         {/* Actions and Theme Toggle */}
-        <button className="p-2 text-gcp-600 dark:text-gcp-400 hover:text-gcp-900 
-                          dark:hover:text-gcp-100 hover:bg-gcp-100 dark:hover:bg-gcp-800 
-                          rounded-lg transition-colors focus:outline-none focus:ring-2 
-                          focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gcp-900">
-          <HelpCircle className="w-5 h-5" />
-        </button>
         <ThemeToggle />
-        <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center 
-                        text-white text-label-medium font-medium cursor-pointer
-                        hover:bg-primary-600 transition-colors focus:outline-none focus:ring-2 
-                        focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gcp-900">
-          U
-        </div>
+        {/* Help Button */}
+        <button
+          className="w-8 h-8 bg-gcp-100 dark:bg-gcp-800 rounded-full flex items-center justify-center text-gcp-600 dark:text-gcp-300 hover:bg-primary-100 dark:hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gcp-900"
+          title="Help"
+          aria-label="Help"
+          type="button"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 17h.01M12 13a4 4 0 10-4-4m4 4v2m0 4a9 9 0 110-18 9 9 0 010 18z" />
+          </svg>
+        </button>
       </div>
     </header>
   );

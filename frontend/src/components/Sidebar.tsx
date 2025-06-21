@@ -247,7 +247,7 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, onToggleS
             <div className="text-body-small text-gcp-500 dark:text-dark-muted truncate">Last scan: 2 hours ago</div>
             {/* Scan Button */}
             <button
-              className="mt-3 w-full flex items-center rounded-sm justify-center gap-2 px-3 py-2 bg-gradient-to-r from-primary-500 to-primary-400 hover:from-primary-600 hover:to-primary-500 text-white text-sm font-medium transition-transform focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-dark-bg shadow-elevation-2 animate-fade-in active:scale-95"
+              className="mt-3 w-full flex items-center rounded-sm justify-center gap-2 px-3 py-2 bg-gradient-to-r from-primary-500 to-primary-400 hover:from-primary-600 hover:to-primary-500 text-white text-sm font-medium transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-dark-bg shadow-elevation-2 animate-fade-in active:scale-95"
               onClick={() => {/* trigger scan logic here */}}
               type="button"
             >
@@ -266,7 +266,7 @@ export function Sidebar({ activeSection, onSectionChange, isCollapsed, onToggleS
             {/* Scan Button (icon only) */}
             <Tooltip content="Scan" placement="right">
               <button
-                className="flex items-center justify-center p-2 rounded-none bg-gradient-to-r from-primary-500 to-primary-400 hover:from-primary-600 hover:to-primary-500 text-white transition-transform focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-dark-bg shadow-elevation-2 animate-fade-in active:scale-95"
+                className="flex items-center justify-center p-2 rounded-none bg-gradient-to-r from-primary-500 to-primary-400 hover:from-primary-600 hover:to-primary-500 text-white transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-dark-bg shadow-elevation-2 animate-fade-in active:scale-95"
                 onClick={() => {/* trigger scan logic here */}}
                 type="button"
               >

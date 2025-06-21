@@ -98,7 +98,7 @@ export function ResourceTable({ resources, filters }: ResourceTableProps) {
   };
 
   return (
-    <div className="bg-white/70 dark:bg-dark-card/80 rounded border border-gcp-200 dark:border-dark-border shadow-elevation-2 overflow-hidden backdrop-blur-xl animate-fade-in transition-all duration-200">
+    <div className="bg-white dark:bg-dark-card rounded-xl border border-gcp-200 dark:border-dark-border shadow-elevation-2 overflow-hidden backdrop-blur-xl animate-fade-in transition-all duration-200">
       {/* Table Header */}
       <div className="px-6 py-4 border-b border-gcp-200 dark:border-dark-border bg-white/80 dark:bg-gcp-900/80 sticky top-0 z-10 shadow-sm backdrop-blur-xl">
         {/* Add KPI toggle and sticky header */}
@@ -143,7 +143,7 @@ export function ResourceTable({ resources, filters }: ResourceTableProps) {
             <>
               <div className="overflow-x-auto custom-scrollbar">
                 <table className="min-w-full divide-y divide-gcp-200 dark:divide-gcp-800">
-                  <thead className="bg-white/80 dark:bg-gcp-900/80 sticky top-0 z-10 shadow-sm backdrop-blur-xl">
+                  <thead className="bg-slate-50/80 dark:bg-gcp-900/80 sticky top-0 z-10 shadow-sm backdrop-blur-xl">
                     <tr>
                       <th className="px-6 py-3">
                         <SortableHeader
@@ -191,14 +191,18 @@ export function ResourceTable({ resources, filters }: ResourceTableProps) {
                   </thead>
                   <tbody className="bg-white/70 dark:bg-gcp-900/70 divide-y divide-gcp-200 dark:divide-gcp-800">
                     {paginatedData.map(resource => (
-                      <tr key={resource.id} className="hover:bg-primary-50/40 dark:hover:bg-primary-900/10 transition-all duration-150 animate-fade-in">
+                      <tr key={resource.id} className="hover:bg-primary-100/60 dark:hover:bg-primary-900/10 border-b border-gcp-200 dark:border-gcp-800 transition-all duration-150 animate-fade-in">
                         {/* Example cells, replace with your actual data */}
                         <td className="px-6 py-4 whitespace-nowrap text-gcp-900 dark:text-gcp-100 font-medium">{resource.name}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-gcp-700 dark:text-gcp-200">{resource.type}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-gcp-700 dark:text-gcp-200">{resource.region}</td>
                         <td className="px-6 py-4 whitespace-nowrap"><StatusChip status={resource.status} size="sm" /></td>
                         <td className="px-6 py-4 whitespace-nowrap text-gcp-500 dark:text-gcp-400">{formatLastActive(resource.lastActive)}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-primary-600 dark:text-primary-400 font-semibold">{resource.cpuUsage?.toFixed(1)}%</td>
+                        <td className={clsx('px-6 py-4 whitespace-nowrap font-semibold', {
+                          'text-red-500 dark:text-red-400': resource.cpuUsage < 1,
+                          'text-amber-500 dark:text-amber-400': resource.cpuUsage >= 1 && resource.cpuUsage < 5,
+                          'text-primary-600 dark:text-primary-400': resource.cpuUsage >= 5
+                        })}>{resource.cpuUsage?.toFixed(1)}%</td>
                         {/* Remove Actions cell */}
                       </tr>
                     ))}

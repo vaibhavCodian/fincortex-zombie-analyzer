@@ -65,17 +65,17 @@ function App() {
 
   if (activeSection === 'settings') {
     return (
-      <div className="bg-white dark:bg-dark-bg min-h-screen transition-colors duration-200">
-        <Topbar 
-          searchQuery={filters.search} 
-          onSearchChange={handleSearchChange}
+      <div className="flex min-h-screen bg-slate-50 dark:bg-dark-bg">
+        <Sidebar 
+          activeSection={activeSection} 
+          onSectionChange={setActiveSection}
           isCollapsed={isCollapsed}
           onToggleSidebar={toggleSidebar}
         />
-        <div className="flex">
-          <Sidebar 
-            activeSection={activeSection} 
-            onSectionChange={setActiveSection}
+        <div className="flex-1 flex flex-col min-w-0">
+          <Topbar 
+            searchQuery={filters.search} 
+            onSearchChange={handleSearchChange}
             isCollapsed={isCollapsed}
             onToggleSidebar={toggleSidebar}
           />
@@ -90,19 +90,19 @@ function App() {
   }
 
   return (
-    <div className="bg-white dark:bg-dark-bg min-h-screen transition-colors duration-200">
-      <Topbar 
-        searchQuery={filters.search} 
-        onSearchChange={handleSearchChange}
+    <div className="flex min-h-screen bg-slate-50 dark:bg-dark-bg">
+      <Sidebar 
+        activeSection={activeSection} 
+        onSectionChange={setActiveSection}
         isCollapsed={isCollapsed}
-        onToggleSidebar={toggleSidebar} // <-- Add this line
+        onToggleSidebar={toggleSidebar}
       />
-      <div className="flex">
-        <Sidebar 
-          activeSection={activeSection} 
-          onSectionChange={setActiveSection}
+      <div className="flex-1 flex flex-col min-w-0">
+        <Topbar 
+          searchQuery={filters.search} 
+          onSearchChange={handleSearchChange}
           isCollapsed={isCollapsed}
-          onToggleSidebar={toggleSidebar} // <-- Add this line
+          onToggleSidebar={toggleSidebar}
         />
         <main
           className={clsx(

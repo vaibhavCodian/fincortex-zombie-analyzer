@@ -28,9 +28,14 @@ export function ResourceVisualizer({ resources, isVisible = true, showLegend = f
   // KPIs
   const totalResources = resources.length;
   const totalVMs = resources.filter(r => r.type === 'VM').length;
+  const totalGKE = resources.filter(r => r.type === 'GKE').length;
+  const totalSQL = resources.filter(r => r.type === 'SQL').length;
   const totalZombie = resources.filter(r => r.status === 'Stopped' || r.status === 'Inactive').length;
-  const totalCost = resources.reduce((sum, r) => sum + (typeof r.cost === 'number' ? r.cost : 0), 0);
   const avgCPU = resources.length > 0 ? (resources.reduce((sum, r) => sum + (typeof r.cpuUsage === 'number' ? r.cpuUsage : 0), 0) / resources.length) : 0;
+
+  const totalZombieVMs = resources.filter(r => r.type === 'VM' && (r.status === 'Stopped' || r.status === 'Inactive')).length;
+  const totalZombieGKE = resources.filter(r => r.type === 'GKE' && (r.status === 'Stopped' || r.status === 'Inactive')).length;
+  const totalZombieSQL = resources.filter(r => r.type === 'SQL' && (r.status === 'Stopped' || r.status === 'Inactive')).length;
 
   const COLORS = ['#4285F4', '#34A853', '#FBBC05', '#EA4335', '#5F6368', '#185ABC'];
 
@@ -47,13 +52,26 @@ export function ResourceVisualizer({ resources, isVisible = true, showLegend = f
             <span className="text-xs text-gcp-500 dark:text-gcp-400 font-medium">Zombie Resources</span>
             <span className="text-2xl font-bold text-error-600 dark:text-error-400">{totalZombie}</span>
           </div>
-          <div className="bg-white/70 dark:bg-gcp-900/70 rounded-xl p-4 flex flex-col items-start border border-gcp-200 dark:border-gcp-800 shadow-elevation-2 backdrop-blur-xl animate-fade-in">
+        </div>
+        {/* Horizontal KPI row for VM, GKE, SQL */}
+        <div className="flex flex-row gap-4">
+          {/* Total VMs */}
+          <div className="bg-white/70 dark:bg-gcp-900/70 rounded-xl p-4 flex flex-col items-center border border-gcp-200 dark:border-gcp-800 shadow-elevation-2 backdrop-blur-xl animate-fade-in min-w-[120px]">
             <span className="text-xs text-gcp-500 dark:text-gcp-400 font-medium">Total VMs</span>
-            <span className="text-2xl font-bold text-gcp-900 dark:text-gcp-100">{totalVMs}</span>
+            <span className="text-xl font-bold text-gcp-900 dark:text-gcp-100">{totalVMs}</span>
+            <span className="text-xs mt-2 text-error-600 dark:text-error-400 font-semibold">Zombie: {totalZombieVMs}</span>
           </div>
-          <div className="bg-white/70 dark:bg-gcp-900/70 rounded-xl p-4 flex flex-col items-start border border-gcp-200 dark:border-gcp-800 shadow-elevation-2 backdrop-blur-xl animate-fade-in">
-            <span className="text-xs text-gcp-500 dark:text-gcp-400 font-medium">Total Cost</span>
-            <span className="text-2xl font-bold text-gcp-900 dark:text-gcp-100">${totalCost.toFixed(2)}</span>
+          {/* Total GKE Clusters */}
+          <div className="bg-white/70 dark:bg-gcp-900/70 rounded-xl p-4 flex flex-col items-center border border-gcp-200 dark:border-gcp-800 shadow-elevation-2 backdrop-blur-xl animate-fade-in min-w-[120px]">
+            <span className="text-xs text-gcp-500 dark:text-gcp-400 font-medium">GKE Clusters</span>
+            <span className="text-xl font-bold text-gcp-900 dark:text-gcp-100">{totalGKE}</span>
+            <span className="text-xs mt-2 text-error-600 dark:text-error-400 font-semibold">Zombie: {totalZombieGKE}</span>
+          </div>
+          {/* Total Cloud SQL */}
+          <div className="bg-white/70 dark:bg-gcp-900/70 rounded-xl p-4 flex flex-col items-center border border-gcp-200 dark:border-gcp-800 shadow-elevation-2 backdrop-blur-xl animate-fade-in min-w-[120px]">
+            <span className="text-xs text-gcp-500 dark:text-gcp-400 font-medium">Cloud SQL</span>
+            <span className="text-xl font-bold text-gcp-900 dark:text-gcp-100">{totalSQL}</span>
+            <span className="text-xs mt-2 text-error-600 dark:text-error-400 font-semibold">Zombie: {totalZombieSQL}</span>
           </div>
         </div>
         <div className="bg-white/70 dark:bg-gcp-900/70 rounded-xl p-4 flex flex-col items-start border border-gcp-200 dark:border-gcp-800 shadow-elevation-2 backdrop-blur-xl animate-fade-in">
